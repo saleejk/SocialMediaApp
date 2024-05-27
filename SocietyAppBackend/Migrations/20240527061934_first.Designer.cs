@@ -12,7 +12,7 @@ using SocietyAppBackend.Data;
 namespace SocietyAppBackend.Migrations
 {
     [DbContext(typeof(DbContextClass))]
-    [Migration("20240525123856_first")]
+    [Migration("20240527061934_first")]
     partial class first
     {
         /// <inheritdoc />

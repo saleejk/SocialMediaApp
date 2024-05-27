@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using SocietyAppBackend.Data;
 using SocietyAppBackend.JwtVerification;
 using SocietyAppBackend.Service;
+using SocietyAppBackend.Service.LikeService;
 using SocietyAppBackend.Service.PostServices;
 using System.Text;
 
@@ -17,7 +18,9 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<DbContextClass>();
 builder.Services.AddScoped<IUserServices, IUserService>();
 builder.Services.AddScoped<IPostServices, PostServices>();
+builder.Services.AddScoped<ILikeServices, LikeServices>();
 builder.Services.AddScoped<IJwtService, JwtService>();
+
 builder.Services.AddAutoMapper(typeof(Mapper));
 builder.Services.AddAuthentication(options =>
 {
