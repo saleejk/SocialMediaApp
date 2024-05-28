@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using SocietyAppBackend.Data;
@@ -7,12 +8,14 @@ using SocietyAppBackend.ModelEntity.Dto;
 
 namespace SocietyAppBackend.Service.CommentServices
 {
-    public class CommentServices
+    public class CommentServices:ICommentServices
     {
         public readonly DbContextClass _dbcontext;
-        public CommentServices(DbContextClass dbcontext)
+        public readonly IMapper _mapper;
+        public CommentServices(DbContextClass dbcontext, IMapper mapper)
         {
             _dbcontext = dbcontext;
+            _mapper = mapper;
         }
         public async Task<bool>AddComment(int userid,int postid,string text)
         {
@@ -22,23 +25,44 @@ namespace SocietyAppBackend.Service.CommentServices
                 return false;
             }
             var comment = new Comment { UserId = userid, PostId = postid, Text = text, CreatedAt = DateTime.Now };
-            _dbcontext.Comments.Add(comment);
+            await _dbcontext.Comments.AddAsync(comment);
             await _dbcontext.SaveChangesAsync();
             return true;
 
         }
-        //public async Task<List<CommentDto>> GetAllComment()
-        //{
-        //    List<CommentDto>commentlist= new List<CommentDto>();
-        //    var cmt = _dbcontext.Comments.ToList();
-        //    foreach(Comment c in cmt)
-        //    {
-        //        commentlist.Add(new CommentDto
-        //        {
-        //            CommentId = Convert.ToInt32(c[""])
-        //    }
-        //}
-        public async Task<bool>DeleteComment(int userid,int commentId)
+        public async Task<List<CommentDto>> GetAllComment()
+        {
+            //List<CommentDto> commentlist = new List<CommentDto>();
+            //var cmt = _dbcontext.Comments.ToList();
+            //foreach (Comment c in cmt)
+            //{
+            //    commentlist.Add(new CommentDto
+            //    {
+            //        CommentId = c.CommentId,
+            //        UserId = c.UserId,
+            //        PostId = c.PostId,
+            //        Text = c.Text,
+            //        CreatedAt = c.CreatedAt
+            //    });
+            //}
+            //return commentlist;
+            var cmt = await _dbcontext.Comments.ToListAsync();
+            var mappedList = _mapper.Map<List<CommentDto>>(cmt);
+            return mappedList;
+
+
+        }
+        public async Task<CommentDto>GetCommentByid(int id)
+        {
+            var cmt = await _dbcontext.Comments.FirstOrDefaultAsync(i => i.CommentId == id);
+            if (cmt != null) {
+                var mappedcomment = _mapper.Map<CommentDto>(cmt);
+                return mappedcomment;
+            }
+            return null;
+            
+        }
+            public async Task<bool>DeleteComment(int userid,int commentId)
         {
             var comment = await _dbcontext.Comments.FirstOrDefaultAsync(i => i.UserId == userid && i.CommentId == commentId);
             if (comment == null)
@@ -49,6 +73,7 @@ namespace SocietyAppBackend.Service.CommentServices
              await _dbcontext.SaveChangesAsync();
             return true;
         }
+
     }
 }
 

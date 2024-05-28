@@ -16,6 +16,7 @@ namespace SocietyAppBackend.Controllers
             _post = post;
         }
         [HttpGet("GetAllPosts")]
+       
         public async Task<IActionResult> GetAllPost()
         {
             try
@@ -25,15 +26,15 @@ namespace SocietyAppBackend.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);
-            }
+            }   
         }
         [HttpGet("GetPostById")]
         public async Task<IActionResult> GetPostById(int id)
         {
             return Ok(await _post.GetPostById(id));
         }
-        [HttpPost("AddPost")]
         [Authorize]
+        [HttpPost("AddPost")]
         public async Task<IActionResult>AddPost([FromForm]PostDto postdto,IFormFile image)
         {
             try

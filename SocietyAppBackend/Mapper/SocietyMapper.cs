@@ -4,12 +4,14 @@ using SocietyAppBackend.ModelEntity.Dto;
 
 namespace SocietyAppBackend.Mapper
 {
-    public class Mapper:Profile
+    public class SocietyMapper:Profile
     {
-        public Mapper()
+        public SocietyMapper()
         {
             CreateMap<User,UserDto>().ReverseMap();
             CreateMap<Post, PostViewDto>().ReverseMap();
+            CreateMap<Comment, CommentDto>().ReverseMap();
+            CreateMap<Follow,FollowDto>().ReverseMap();
         }
     }
 }

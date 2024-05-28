@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SocietyAppBackend.Data;
 using SocietyAppBackend.JwtVerification;
+using SocietyAppBackend.Mapper;
 using SocietyAppBackend.Service;
+using SocietyAppBackend.Service.CommentServices;
+using SocietyAppBackend.Service.FollowService;
 using SocietyAppBackend.Service.LikeService;
 using SocietyAppBackend.Service.PostServices;
 using System.Text;
@@ -19,9 +22,11 @@ builder.Services.AddScoped<DbContextClass>();
 builder.Services.AddScoped<IUserServices, IUserService>();
 builder.Services.AddScoped<IPostServices, PostServices>();
 builder.Services.AddScoped<ILikeServices, LikeServices>();
+builder.Services.AddScoped<ICommentServices, CommentServices>();
+builder.Services.AddScoped<IFollowServices, FollowServices>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 
-builder.Services.AddAutoMapper(typeof(Mapper));
+builder.Services.AddAutoMapper(typeof(SocietyMapper));
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
