@@ -50,6 +50,7 @@ namespace SocietyAppBackend.Service
             var existingUser = await _dbcontext.UserTable.FirstOrDefaultAsync(i => i.Username == login.Username);
             return existingUser;
         }
+        
        
         //public async Task<string> LoginUser(LoginDto user)
         //{

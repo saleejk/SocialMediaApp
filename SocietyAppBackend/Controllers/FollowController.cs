@@ -29,8 +29,21 @@ namespace SocietyAppBackend.Controllers
         [HttpGet("GetAllfollowList")]
         public async Task<IActionResult> GetAllFollowList()
         {
-            return Ok(await _followservices.GetAllfollowers());
+            return Ok(await _followservices.GetAllfollowList());
         }
+        [HttpGet("GetFollowingsInAUser")]
+        public async Task<IActionResult> GetFollowingInAUser(int userId)
+        {
+            return Ok(await _followservices.GetFollowingInUser(userId));
+        }
+        [HttpGet("GetAllFollowersInAUser")]
+        public async Task<IActionResult> GetAllFollowersinAUser(int userid)
+        {
+            return Ok( await _followservices.GetAllFollowersInAUser(userid));
+        }
+
+
+
         [HttpDelete("UnfollowUser")]
         public async Task<IActionResult> UnfollowUser(int userid,int unfollowId)
         {

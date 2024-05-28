@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
 using SocietyAppBackend.Data;
 using SocietyAppBackend.ModelEntity;
 using SocietyAppBackend.ModelEntity.Dto;
@@ -18,7 +20,7 @@ namespace SocietyAppBackend.Service.FollowService
         public async Task<string>FollowUser(int userid,int followingid)
         {
             var k = await _dbcontext.Follows.FirstOrDefaultAsync(i => i.FollowerId == userid && i.FollowingId == followingid);
-            if (userid == followingid||k==null)
+            if (userid == followingid||k!=null)
             {
                 return "cannot follow yourself";
             }
@@ -29,7 +31,19 @@ namespace SocietyAppBackend.Service.FollowService
             return "followed successfully";
 
         }
-        public async Task<List<FollowDto>> GetAllfollowers()
+        public async Task<List<FollowDto>>GetFollowingInUser(int userid)
+        {
+            var followers = await _dbcontext.Follows.Where(i => i.FollowerId == userid).ToListAsync();
+            return _mapper.Map<List<FollowDto>>(followers);
+
+        }
+        public async Task<List<FollowDto>> GetAllFollowersInAUser(int userid)
+        {
+            var followers = await _dbcontext.Follows.Where(i => i.FollowingId == userid).ToListAsync();
+            return _mapper.Map<List<FollowDto>>(followers);
+        }
+
+        public async Task<List<FollowDto>> GetAllfollowList()
         {
            return  _mapper.Map<List<FollowDto>>(_dbcontext.Follows.ToList());
         }
@@ -47,6 +61,7 @@ namespace SocietyAppBackend.Service.FollowService
                 return "unfollow successfully";
             }
         }
+
 
 
 

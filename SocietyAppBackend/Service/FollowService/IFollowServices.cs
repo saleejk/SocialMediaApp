@@ -7,7 +7,10 @@ namespace SocietyAppBackend.Service.FollowService
     {
         Task<string> FollowUser(int followerid, int followingid);
         Task<string> UnFollowUser(int followerid, int followingid);
-         Task<List<FollowDto>> GetAllfollowers();
+         Task<List<FollowDto>> GetAllfollowList();
+        Task<List<FollowDto>> GetFollowingInUser(int userid);
+        Task<List<FollowDto>> GetAllFollowersInAUser(int userid);
+
 
 
 

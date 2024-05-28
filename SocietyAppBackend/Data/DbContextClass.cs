@@ -21,6 +21,7 @@ namespace SocietyAppBackend.Data
         public DbSet<Comment> Comments {  get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Follow>Follows { get; set; }
+       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Post>().HasOne(p => p.User).WithMany(u => u.Posts).HasForeignKey(p => p.UserId);
