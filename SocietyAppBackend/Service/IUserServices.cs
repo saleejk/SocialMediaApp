@@ -13,13 +13,20 @@ namespace SocietyAppBackend.Service
     public interface IUserServices
     {
 
-        Task<string> RegisterUser(UserDto userdto);
-        Task<List<User>> GetAllUsers();
-        Task<User> GetUserById(int id);
+        Task<string> RegisterUser(UserDto userdto, IFormFile image);
+         Task<List<UserViewDto>> GetAllUsers();
+        Task<UserViewByIdFollow> GetUserById(int id);
         Task<User> Login(LoginDto login);
+         Task<string> BlockUser(int userid);
+        Task<string> UnBlockUser(int userid);
+        Task UpdateUserData(int userid, UpdateUserDto user, IFormFile image);
+        Task<string> DeleteRegisteredUser(int id);
+
+
+
 
 
 
     }
-   
+
 }

@@ -12,6 +12,8 @@ namespace SocietyAppBackend.Mapper
             CreateMap<Post, PostViewDto>().ReverseMap();
             CreateMap<Comment, CommentDto>().ReverseMap();
             CreateMap<Follow,FollowDto>().ReverseMap();
+            CreateMap<PostDto, Post>().ReverseMap();
+            CreateMap<UserViewDto, User>().ReverseMap();
         }
     }
 }

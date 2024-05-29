@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SocietyAppBackend.Data;
 using SocietyAppBackend.JwtVerification;
@@ -36,8 +38,12 @@ namespace SocietyAppBackend.Service.PostServices
         public async Task<PostViewDto> GetPostById(int id)
         {
             var k= await _dbcontext.Posts.FirstOrDefaultAsync(i=>i.PostId == id);
-            return new PostViewDto { PostId=k.PostId, UserId=k.UserId, ImageUrl=k.ImageUrl, CreatedAt=k.CreatedAt, Caption=k.Caption };
-                
+            if (k == null)
+            {
+                return null;
+            }
+            return new PostViewDto { PostId = k.PostId, UserId = k.UserId, ImageUrl = k.ImageUrl, CreatedAt = k.CreatedAt, Caption = k.Caption };
+
         }
         public async Task AddPost(string token, PostDto postdto, IFormFile image)
         {
@@ -67,9 +73,45 @@ namespace SocietyAppBackend.Service.PostServices
                 throw new Exception("Error adding product:" + ex.Message);
             }
         }
+        public async Task<List<PostViewDto>>GetAllPostByUserId(int userId)
+        {
+            var posts =  _dbcontext.Posts.Where(i => i.UserId == userId);
+            if (posts == null)
+            {
+                return null;
+            }
+            return _mapper.Map<List<PostViewDto>>(posts);
+
+
+        }
+        public async Task<string> UpdatePost(int postid,[FromBody] PostDto postdto)
+        {
+            var editPost = await _dbcontext.Posts.FirstOrDefaultAsync(i => i.PostId == postid);
+            if (editPost == null)
+            {
+                return "invalid postid";
+            }
+            editPost.Caption = postdto.Caption;
+            editPost.CreatedAt = DateTime.Now;
+           await _dbcontext.SaveChangesAsync();
+            return "update Completed";
+
+        }
 
 
 
+        public async Task<string> DeletePost(int postid)
+        {
+            var deletepost = await _dbcontext.Posts.FirstOrDefaultAsync(i => i.PostId == postid);
+            if (deletepost == null)
+            {
+                return "invalid postid";
+            }
+            _dbcontext.Posts.Remove(deletepost);
+            await _dbcontext.SaveChangesAsync();
+            return "deletion completed";
+
+        }
 
 
     }

@@ -47,6 +47,11 @@ namespace SocietyAppBackend.Controllers
             catch (Exception ex) { return BadRequest("something went wrong");
             }
         }
+        [HttpGet("GetAllLikeByPostId")]
+        public async Task<IActionResult>GetAllLikeByPostId(int postid)
+        {
+            return Ok(await _likeServices.GetAllLikeByPostId(postid));
+        }
 
     }
 

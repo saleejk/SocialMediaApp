@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 using SocietyAppBackend.Data;
 using SocietyAppBackend.Service.CommentServices;
 
@@ -50,6 +51,17 @@ namespace SocietyAppBackend.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+        [HttpGet("GetCommentByPostId")]
+
+        public async Task<IActionResult>GeAllCommentByPostId(int postid)
+        {
+            return Ok(await _commentServices.GetCommentByPostId(postid));
+        }
+        [HttpDelete]
+        public async Task<IActionResult>DeleteComment(int id)
+        {
+            return Ok(await _commentServices.DeleteComment(id));
         }
     }
 }

@@ -21,6 +21,7 @@ namespace SocietyAppBackend.Data
         public DbSet<Comment> Comments {  get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Follow>Follows { get; set; }
+        //public DbSet<Message> Messages { get; set; }
        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,6 +32,8 @@ namespace SocietyAppBackend.Data
             modelBuilder.Entity<Like>().HasOne(i => i.User).WithMany(i =>i.Likes).HasForeignKey(i => i.UserId).OnDelete(DeleteBehavior.NoAction);
             modelBuilder.Entity<Follow>().HasOne(i => i.Follower).WithMany(i => i.Followers).HasForeignKey(i => i.FollowerId).OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Follow>().HasOne(i => i.Following).WithMany(i => i.Followings).HasForeignKey(i => i.FollowingId).OnDelete(DeleteBehavior.Restrict);
+            //modelBuilder.Entity<Message>().HasOne(i => i.Sender).WithMany(i => i.SendMessege).HasForeignKey(i => i.SenderId);
+            //modelBuilder.Entity<Message>().HasOne(i => i.Reciever).WithMany(i => i.RecievedMessege).HasForeignKey(i => i.RecieverId);
         }
     }
 }

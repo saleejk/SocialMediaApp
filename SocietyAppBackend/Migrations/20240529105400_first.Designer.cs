@@ -12,7 +12,7 @@ using SocietyAppBackend.Data;
 namespace SocietyAppBackend.Migrations
 {
     [DbContext(typeof(DbContextClass))]
-    [Migration("20240527061934_first")]
+    [Migration("20240529105400_first")]
     partial class first
     {
         /// <inheritdoc />
@@ -57,11 +57,11 @@ namespace SocietyAppBackend.Migrations
 
             modelBuilder.Entity("SocietyAppBackend.ModelEntity.Follow", b =>
                 {
-                    b.Property<int>("FollowId")
+                    b.Property<int?>("FollowId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FollowId"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("FollowId"));
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
@@ -155,7 +155,10 @@ namespace SocietyAppBackend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("IsStatus")
+                    b.Property<bool?>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsBlocked")
                         .HasColumnType("bit");
 
                     b.Property<string>("PasswordHash")

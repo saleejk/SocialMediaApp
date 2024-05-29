@@ -37,6 +37,15 @@ namespace SocietyAppBackend.Service.LikeService
             await _dbcontext.SaveChangesAsync();
             return true;
         }
+        public async Task<List<Like>> GetAllLikeByPostId(int postid)
+        {
+            var post = await _dbcontext.Likes.Where(i => i.PostId == postid).ToListAsync();
+            if (post == null)
+            {
+                return null;
+            }
+            return post;
+        }
            
     }
 }

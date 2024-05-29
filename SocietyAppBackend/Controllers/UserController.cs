@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SocietyAppBackend.ModelEntity;
@@ -22,11 +23,11 @@ namespace SocietyAppBackend.Controllers
             _config = config;
         }
         [HttpPost("Register")]
-        public async Task<IActionResult> RegisterUser([FromBody] UserDto userDto)
+        public async Task<IActionResult> RegisterUser([FromForm] UserDto userDto,IFormFile image)
         {
             try
             {
-                var isExist = await _userService.RegisterUser(userDto);
+                var isExist = await _userService.RegisterUser(userDto,image);
                 return Ok(isExist);
             }
             catch (Exception ex)
@@ -55,6 +56,10 @@ namespace SocietyAppBackend.Controllers
                 {
                     return NotFound("username or password incorrect");
                 }
+                if (existingUser.IsBlocked)
+                {
+                    return BadRequest("access denied");
+                }
                 bool validatePassword = BCrypt.Net.BCrypt.Verify(login.Password, existingUser.PasswordHash);
                 if (!validatePassword)
                 {
@@ -67,6 +72,35 @@ namespace SocietyAppBackend.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+        [HttpPut("block-user")]
+        [Authorize(Roles = "Admin")]
+
+        public async Task<IActionResult>BlockUser(int id)
+        {
+            if (id == null)
+            {
+                return BadRequest("invalid id");
+            }
+            return Ok(await _userService.BlockUser(id));
+
+        }
+        [HttpPut("Unblock-user")]
+        [Authorize(Roles ="Admin")]
+        public async Task<IActionResult>UnBlockUser(int id)
+        {
+            return Ok( await _userService.UnBlockUser(id));
+        }
+        [HttpPut("updateUserData")]
+        public async Task<IActionResult>UpdateUserData(int userid,[FromForm]UpdateUserDto userdto,IFormFile image)
+        {
+            if (userid==null)
+            {
+                BadRequest("invalid id or datas");     
+            }
+            await _userService.UpdateUserData(userid, userdto, image);
+            return Ok("user Update successfully");
+
         }
         private string GenerateToken(User users)
         {
@@ -90,6 +124,19 @@ namespace SocietyAppBackend.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
 
+        }
+        [HttpDelete("deleteRegUser")]
+       // [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> deleteRegUser(int id)
+        {
+            if (id == null)
+            {
+                return BadRequest("invalid userid");
+
+                
+            }
+
+            return Ok(await _userService.DeleteRegisteredUser(id));
         }
 
     }

@@ -49,9 +49,29 @@ namespace SocietyAppBackend.Service.CommentServices
             var cmt = await _dbcontext.Comments.ToListAsync();
             var mappedList = _mapper.Map<List<CommentDto>>(cmt);
             return mappedList;
-
-
         }
+        public async Task<bool>DeleteComment(int id)
+        {
+            var comment = await _dbcontext.Comments.FirstOrDefaultAsync(i => i.CommentId == id);
+               if(comment == null)
+            {
+                return false;
+            }
+            _dbcontext.Comments.Remove(comment);
+            await _dbcontext.SaveChangesAsync();
+            return true;
+        }
+        public async Task<List<CommentDto>>GetCommentByPostId(int postid)
+        {
+            var comments = await _dbcontext.Comments.Where(i => i.PostId == postid).ToListAsync();
+            var mappedCmt = _mapper.Map<List<CommentDto>>(comments);
+            if(comments == null)
+            {
+                return null;
+            }
+            return mappedCmt;
+        }
+
         public async Task<CommentDto>GetCommentByid(int id)
         {
             var cmt = await _dbcontext.Comments.FirstOrDefaultAsync(i => i.CommentId == id);
@@ -62,17 +82,18 @@ namespace SocietyAppBackend.Service.CommentServices
             return null;
             
         }
-            public async Task<bool>DeleteComment(int userid,int commentId)
-        {
-            var comment = await _dbcontext.Comments.FirstOrDefaultAsync(i => i.UserId == userid && i.CommentId == commentId);
-            if (comment == null)
-            {
-                return false;
-            }
-            _dbcontext.Comments.Remove(comment);
-             await _dbcontext.SaveChangesAsync();
-            return true;
-        }
+        //    public async Task<bool>DeleteComment(int commentId)
+        //{
+        //    var comment = await _dbcontext.Comments.FirstOrDefaultAsync(i => i.CommentId == commentId);
+        //    if (comment == null)
+        //    {
+        //        return false;
+        //    }
+        //    _dbcontext.Comments.Remove(comment);
+        //     await _dbcontext.SaveChangesAsync();
+        //    return true;
+        //}
+
 
     }
 }

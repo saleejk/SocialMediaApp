@@ -31,7 +31,17 @@ namespace SocietyAppBackend.Controllers
         [HttpGet("GetPostById")]
         public async Task<IActionResult> GetPostById(int id)
         {
-            return Ok(await _post.GetPostById(id));
+            var post = await _post.GetPostById(id);
+            if (post == null)
+            {
+              return  BadRequest("invalid postId");
+            }
+            return Ok(post);
+        }
+        [HttpGet("GetAllPostByUserId")]
+        public async Task<IActionResult> GetAllPostByUserId(int userid)
+        {
+            return Ok(await _post.GetAllPostByUserId(userid));
         }
         [Authorize]
         [HttpPost("AddPost")]
@@ -50,6 +60,19 @@ namespace SocietyAppBackend.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+        [HttpPut("updatePost")]
+        public async Task<IActionResult> EditPost(int postid, [FromBody] PostDto postdto)
+        {
+            return Ok(await _post.UpdatePost(postid, postdto));
+        }
+
+
+        [HttpDelete("DeletePost")]
+        [Authorize]
+        public async Task<IActionResult>DeletePost(int postid)
+        {
+            return Ok(await _post.DeletePost(postid));
         }
     }
 }
