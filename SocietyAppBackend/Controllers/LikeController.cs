@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SocietyAppBackend.ModelEntity;
 using SocietyAppBackend.Service.LikeService;
@@ -15,6 +16,8 @@ namespace SocietyAppBackend.Controllers
             _likeServices= likeServices;
         }
         [HttpGet("LikePost")]
+        [Authorize]
+
         public async Task<IActionResult>LikePost(int userid,int postid)
         {
             try
@@ -32,6 +35,8 @@ namespace SocietyAppBackend.Controllers
             }
         }
         [HttpDelete("UnLikePost")]
+        [Authorize]
+
         public async Task<IActionResult>UnLikePost(int userid,int postid)
         {
 
@@ -48,6 +53,8 @@ namespace SocietyAppBackend.Controllers
             }
         }
         [HttpGet("GetAllLikeByPostId")]
+        [Authorize]
+
         public async Task<IActionResult>GetAllLikeByPostId(int postid)
         {
             return Ok(await _likeServices.GetAllLikeByPostId(postid));

@@ -13,7 +13,7 @@ namespace SocietyAppBackend.JwtVerification
         {
             _configuration= config;
             secretKey = _configuration["Jwt:Key"];
-        }
+       }
 
 
         public int GetUserIdFromToken(string token)
@@ -27,7 +27,7 @@ namespace SocietyAppBackend.JwtVerification
                 ValidateIssuer = false,
                 ValidateAudience = false,
 
-            };
+            }; 
             var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
             if(validatedToken is not JwtSecurityToken jwtToken)
             {
@@ -37,7 +37,7 @@ namespace SocietyAppBackend.JwtVerification
             var userIdClaim=jwtToken.Claims.FirstOrDefault(claim=>claim.Type==ClaimTypes.NameIdentifier);
              if(userIdClaim==null||!int.TryParse(userIdClaim.Value,out var userId))
             {
-                throw new SecurityTokenException("invalid or missing user id cliam");
+                throw new SecurityTokenException("invalid or missing user id claim");
             }
             return userId;
         }

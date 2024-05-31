@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using SocietyAppBackend.Data;
@@ -16,6 +17,7 @@ namespace SocietyAppBackend.Controllers
             _commentServices = commentServices;
         }        
         [HttpPost("AddComment")]
+        [Authorize]
         public async Task<IActionResult> AddComment(int userid,int postid,string text)
         {
             try
@@ -27,6 +29,7 @@ namespace SocietyAppBackend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [Authorize]
         [HttpGet("GetAllComment")]
         public async Task<IActionResult> GetAllComment()
         {
@@ -40,6 +43,7 @@ namespace SocietyAppBackend.Controllers
             }
         }
         [HttpGet("GetCommentById")]
+        [Authorize]
         public async Task<IActionResult>GetCommentById(int id)
         {
             try
@@ -53,7 +57,7 @@ namespace SocietyAppBackend.Controllers
             }
         }
         [HttpGet("GetCommentByPostId")]
-
+        [Authorize]
         public async Task<IActionResult>GeAllCommentByPostId(int postid)
         {
             return Ok(await _commentServices.GetCommentByPostId(postid));

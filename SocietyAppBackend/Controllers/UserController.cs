@@ -36,11 +36,15 @@ namespace SocietyAppBackend.Controllers
             }
         }
         [HttpGet("GetAllUser")]
+        [Authorize]
+
         public async  Task<IActionResult> GetAllUsers()
         {
             return Ok( await _userService.GetAllUsers());
         }
         [HttpGet("GetUserById")]
+        [Authorize]
+
         public async Task<IActionResult> GetUserById(int id)
         {
             return Ok(await _userService.GetUserById(id));
@@ -92,6 +96,8 @@ namespace SocietyAppBackend.Controllers
             return Ok( await _userService.UnBlockUser(id));
         }
         [HttpPut("updateUserData")]
+        [Authorize]
+
         public async Task<IActionResult>UpdateUserData(int userid,[FromForm]UpdateUserDto userdto,IFormFile image)
         {
             if (userid==null)

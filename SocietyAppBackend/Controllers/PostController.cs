@@ -16,7 +16,9 @@ namespace SocietyAppBackend.Controllers
             _post = post;
         }
         [HttpGet("GetAllPosts")]
-       
+        [Authorize]
+
+
         public async Task<IActionResult> GetAllPost()
         {
             try
@@ -29,6 +31,8 @@ namespace SocietyAppBackend.Controllers
             }   
         }
         [HttpGet("GetPostById")]
+        [Authorize]
+
         public async Task<IActionResult> GetPostById(int id)
         {
             var post = await _post.GetPostById(id);
@@ -39,6 +43,8 @@ namespace SocietyAppBackend.Controllers
             return Ok(post);
         }
         [HttpGet("GetAllPostByUserId")]
+        [Authorize]
+
         public async Task<IActionResult> GetAllPostByUserId(int userid)
         {
             return Ok(await _post.GetAllPostByUserId(userid));
@@ -62,6 +68,8 @@ namespace SocietyAppBackend.Controllers
             }
         }
         [HttpPut("updatePost")]
+        [Authorize]
+
         public async Task<IActionResult> EditPost(int postid, [FromBody] PostDto postdto)
         {
             return Ok(await _post.UpdatePost(postid, postdto));

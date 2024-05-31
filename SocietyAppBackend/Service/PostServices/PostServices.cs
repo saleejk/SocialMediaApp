@@ -62,7 +62,7 @@ namespace SocietyAppBackend.Service.PostServices
                 }
                 else
                 {
-                    productImage = "Uploads/common/IMG_4741.jpeg";
+                    productImage = "Uploads/Common/IMG_4741.jpeg";
                 }
                 var userId = _jwtService.GetUserIdFromToken(token);
                 await _dbcontext.Posts.AddAsync(new Post {UserId=userId,ImageUrl=productImage, Caption=postdto.Caption,CreatedAt=DateTime.Now });
