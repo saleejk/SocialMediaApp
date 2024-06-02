@@ -15,9 +15,9 @@ namespace SocietyAppBackend.Controllers
         {
             _likeServices= likeServices;
         }
+
         [HttpGet("LikePost")]
         [Authorize]
-
         public async Task<IActionResult>LikePost(int userid,int postid)
         {
             try
@@ -34,12 +34,11 @@ namespace SocietyAppBackend.Controllers
                 return BadRequest($"something went wrong{ex.Message}");
             }
         }
+
         [HttpDelete("UnLikePost")]
         [Authorize]
-
         public async Task<IActionResult>UnLikePost(int userid,int postid)
         {
-
             try
             {
                 if (userid == null || postid == null)
@@ -52,14 +51,19 @@ namespace SocietyAppBackend.Controllers
             catch (Exception ex) { return BadRequest("something went wrong");
             }
         }
+
         [HttpGet("GetAllLikeByPostId")]
         [Authorize]
-
         public async Task<IActionResult>GetAllLikeByPostId(int postid)
         {
-            return Ok(await _likeServices.GetAllLikeByPostId(postid));
+            try
+            {
+                return Ok(await _likeServices.GetAllLikeByPostId(postid));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
-
     }
-
 }

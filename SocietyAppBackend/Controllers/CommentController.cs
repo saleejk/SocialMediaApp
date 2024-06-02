@@ -15,20 +15,22 @@ namespace SocietyAppBackend.Controllers
         public CommentController(ICommentServices commentServices)
         {
             _commentServices = commentServices;
-        }        
+        }
+
         [HttpPost("AddComment")]
         [Authorize]
-        public async Task<IActionResult> AddComment(int userid,int postid,string text)
+        public async Task<IActionResult> AddComment(int userid, int postid, string text)
         {
             try
             {
                 var status = await _commentServices.AddComment(userid, postid, text);
                 return Ok(status);
             }
-            catch (Exception ex) { 
+            catch (Exception ex) {
                 return BadRequest(ex.Message);
             }
         }
+
         [Authorize]
         [HttpGet("GetAllComment")]
         public async Task<IActionResult> GetAllComment()
@@ -42,13 +44,14 @@ namespace SocietyAppBackend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpGet("GetCommentById")]
         [Authorize]
-        public async Task<IActionResult>GetCommentById(int id)
+        public async Task<IActionResult> GetCommentById(int id)
         {
             try
             {
-                return Ok( await _commentServices.GetCommentByid(id));
+                return Ok(await _commentServices.GetCommentByid(id));
 
             }
             catch (Exception ex)
@@ -56,16 +59,32 @@ namespace SocietyAppBackend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpGet("GetCommentByPostId")]
         [Authorize]
-        public async Task<IActionResult>GeAllCommentByPostId(int postid)
+        public async Task<IActionResult> GeAllCommentByPostId(int postid)
         {
-            return Ok(await _commentServices.GetCommentByPostId(postid));
+            try
+            {
+                return Ok(await _commentServices.GetCommentByPostId(postid));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
+
         [HttpDelete]
-        public async Task<IActionResult>DeleteComment(int id)
+        public async Task<IActionResult> DeleteComment(int id)
         {
-            return Ok(await _commentServices.DeleteComment(id));
-        }
+            try
+            {
+                return Ok(await _commentServices.DeleteComment(id));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        } 
     }
 }

@@ -24,25 +24,39 @@ namespace SocietyAppBackend.Service.PostServices
         }
         public async Task<List<PostViewDto>> GetAllPosts()
         {
-
-
-            var PostData = await _dbcontext.Posts.Include(i => i.User).ToListAsync();
-            if (PostData.Count > 0)
+            try
             {
-                var productWithCategory = PostData.Select(p => new PostViewDto { PostId = p.PostId, UserId = p.UserId, ImageUrl = p.ImageUrl, CreatedAt = p.CreatedAt, Caption = p.Caption }).ToList();
-                return productWithCategory;
+                var PostData = await _dbcontext.Posts.Include(i => i.User).ToListAsync();
+                if (PostData.Count > 0)
+                {
+                    var productWithCategory = PostData.Select(p => new PostViewDto { PostId = p.PostId, UserId = p.UserId, ImageUrl = p.ImageUrl, CreatedAt = p.CreatedAt, Caption = p.Caption }).ToList();
+                    return productWithCategory;
+                }
+                var k = _mapper.Map<List<PostViewDto>>(PostData);
+                return k;
             }
-            var k = _mapper.Map<List<PostViewDto>>(PostData);
-            return k;
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+           
         }
         public async Task<PostViewDto> GetPostById(int id)
         {
-            var k= await _dbcontext.Posts.FirstOrDefaultAsync(i=>i.PostId == id);
-            if (k == null)
+            try
             {
-                return null;
+                var k = await _dbcontext.Posts.FirstOrDefaultAsync(i => i.PostId == id);
+                if (k == null)
+                {
+                    return null;
+                }
+                var postview = new PostViewDto { PostId = k.PostId, UserId = k.UserId, ImageUrl = k.ImageUrl, CreatedAt = k.CreatedAt, Caption = k.Caption };
+                return postview;
             }
-            return new PostViewDto { PostId = k.PostId, UserId = k.UserId, ImageUrl = k.ImageUrl, CreatedAt = k.CreatedAt, Caption = k.Caption };
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
 
         }
         public async Task AddPost(string token, PostDto postdto, IFormFile image)
@@ -75,45 +89,58 @@ namespace SocietyAppBackend.Service.PostServices
         }
         public async Task<List<PostViewDto>>GetAllPostByUserId(int userId)
         {
-            var posts =  _dbcontext.Posts.Where(i => i.UserId == userId);
-            if (posts == null)
+            try
             {
-                return null;
+                var posts = _dbcontext.Posts.Where(i => i.UserId == userId);
+                if (posts == null)
+                {
+                    return null;
+                }
+                var postview = _mapper.Map<List<PostViewDto>>(posts);
+                return postview;
             }
-            return _mapper.Map<List<PostViewDto>>(posts);
-
-
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public async Task<string> UpdatePost(int postid,[FromBody] PostDto postdto)
         {
-            var editPost = await _dbcontext.Posts.FirstOrDefaultAsync(i => i.PostId == postid);
-            if (editPost == null)
+            try
             {
-                return "invalid postid";
+                var editPost = await _dbcontext.Posts.FirstOrDefaultAsync(i => i.PostId == postid);
+                if (editPost == null)
+                {
+                    return "invalid postid";
+                }
+                editPost.Caption = postdto.Caption;
+                editPost.CreatedAt = DateTime.Now;
+                await _dbcontext.SaveChangesAsync();
+                return "update Completed";
             }
-            editPost.Caption = postdto.Caption;
-            editPost.CreatedAt = DateTime.Now;
-           await _dbcontext.SaveChangesAsync();
-            return "update Completed";
-
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
-
-
-
         public async Task<string> DeletePost(int postid)
         {
-            var deletepost = await _dbcontext.Posts.FirstOrDefaultAsync(i => i.PostId == postid);
-            if (deletepost == null)
+            try
             {
-                return "invalid postid";
+                var deletepost = await _dbcontext.Posts.FirstOrDefaultAsync(i => i.PostId == postid);
+                if (deletepost == null)
+                {
+                    return "invalid postid";
+                }
+                _dbcontext.Posts.Remove(deletepost);
+                await _dbcontext.SaveChangesAsync();
+                return "deletion completed";
             }
-            _dbcontext.Posts.Remove(deletepost);
-            await _dbcontext.SaveChangesAsync();
-            return "deletion completed";
-
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
-
-
     }
 }
 

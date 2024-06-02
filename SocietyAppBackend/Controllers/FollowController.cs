@@ -14,6 +14,7 @@ namespace SocietyAppBackend.Controllers
         {
             _followservices= followservices;
         }
+
         [HttpPost("FollowUser")]
         [Authorize]
         public async Task<IActionResult>FollowUser(int userid,int followingid)
@@ -31,31 +32,48 @@ namespace SocietyAppBackend.Controllers
 
         [HttpGet("GetAllfollowList")]
         [Authorize]
-
         public async Task<IActionResult> GetAllFollowList()
         {
-            return Ok(await _followservices.GetAllfollowList());
+            try
+            {
+                return Ok(await _followservices.GetAllfollowList());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
+
         [HttpGet("GetFollowingsInAUser")]
         [Authorize]
-
         public async Task<IActionResult> GetFollowingInAUser(int userId)
         {
-            return Ok(await _followservices.GetFollowingInUser(userId));
+            try
+            {
+                return Ok(await _followservices.GetFollowingInUser(userId));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
+
         [HttpGet("GetAllFollowersInAUser")]
         [Authorize]
-
         public async Task<IActionResult> GetAllFollowersinAUser(int userid)
         {
-            return Ok( await _followservices.GetAllFollowersInAUser(userid));
+            try
+            {
+                return Ok(await _followservices.GetAllFollowersInAUser(userid));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
-
-
 
         [HttpDelete("UnfollowUser")]
         [Authorize]
-
         public async Task<IActionResult> UnfollowUser(int userid,int unfollowId)
         {
             try
@@ -64,11 +82,7 @@ namespace SocietyAppBackend.Controllers
 
             }
             catch (Exception ex) { return BadRequest(ex.Message);
-            }
-              
+            } 
         }
-
-
-
     }
 }

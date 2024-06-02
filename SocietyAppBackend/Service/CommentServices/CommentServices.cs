@@ -17,18 +17,26 @@ namespace SocietyAppBackend.Service.CommentServices
             _dbcontext = dbcontext;
             _mapper = mapper;
         }
+
         public async Task<bool>AddComment(int userid,int postid,string text)
         {
-            var post = await _dbcontext.Posts.FirstOrDefaultAsync(i => i.UserId == userid && i.PostId == postid);
-            if (post == null)
+            try
             {
-                return false;
-            }
-            var comment = new Comment { UserId = userid, PostId = postid, Text = text, CreatedAt = DateTime.Now };
-            await _dbcontext.Comments.AddAsync(comment);
-            await _dbcontext.SaveChangesAsync();
-            return true;
+                var post = await _dbcontext.Posts.FirstOrDefaultAsync(i => i.UserId == userid && i.PostId == postid);
+                if (post == null)
+                {
+                    return false;
+                }
+                var comment = new Comment { UserId = userid, PostId = postid, Text = text, CreatedAt = DateTime.Now };
+                await _dbcontext.Comments.AddAsync(comment);
+                await _dbcontext.SaveChangesAsync();
+                return true;
 
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public async Task<List<CommentDto>> GetAllComment()
         {
@@ -46,41 +54,69 @@ namespace SocietyAppBackend.Service.CommentServices
             //    });
             //}
             //return commentlist;
-            var cmt = await _dbcontext.Comments.ToListAsync();
-            var mappedList = _mapper.Map<List<CommentDto>>(cmt);
-            return mappedList;
+            try
+            {
+                var cmt = await _dbcontext.Comments.ToListAsync();
+                var mappedList = _mapper.Map<List<CommentDto>>(cmt);
+                return mappedList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public async Task<bool>DeleteComment(int id)
         {
-            var comment = await _dbcontext.Comments.FirstOrDefaultAsync(i => i.CommentId == id);
-               if(comment == null)
+            try
             {
-                return false;
+                var comment = await _dbcontext.Comments.FirstOrDefaultAsync(i => i.CommentId == id);
+                if (comment == null)
+                {
+                    return false;
+                }
+                _dbcontext.Comments.Remove(comment);
+                await _dbcontext.SaveChangesAsync();
+                return true;
             }
-            _dbcontext.Comments.Remove(comment);
-            await _dbcontext.SaveChangesAsync();
-            return true;
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public async Task<List<CommentDto>>GetCommentByPostId(int postid)
         {
-            var comments = await _dbcontext.Comments.Where(i => i.PostId == postid).ToListAsync();
-            var mappedCmt = _mapper.Map<List<CommentDto>>(comments);
-            if(comments == null)
+            try
             {
-                return null;
+                var comments = await _dbcontext.Comments.Where(i => i.PostId == postid).ToListAsync();
+                var mappedCmt = _mapper.Map<List<CommentDto>>(comments);
+                if (comments == null)
+                {
+                    return null;
+                }
+                return mappedCmt;
             }
-            return mappedCmt;
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<CommentDto>GetCommentByid(int id)
         {
-            var cmt = await _dbcontext.Comments.FirstOrDefaultAsync(i => i.CommentId == id);
-            if (cmt != null) {
-                var mappedcomment = _mapper.Map<CommentDto>(cmt);
-                return mappedcomment;
+            try
+            {
+                var cmt = await _dbcontext.Comments.FirstOrDefaultAsync(i => i.CommentId == id);
+                if (cmt != null)
+                {
+                    var mappedcomment = _mapper.Map<CommentDto>(cmt);
+                    return mappedcomment;
+                }
+                return null;
             }
-            return null;
-            
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }    
         }
         //    public async Task<bool>DeleteComment(int commentId)
         //{
@@ -93,8 +129,6 @@ namespace SocietyAppBackend.Service.CommentServices
         //     await _dbcontext.SaveChangesAsync();
         //    return true;
         //}
-
-
     }
 }
 

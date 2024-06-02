@@ -20,13 +20,5 @@ namespace SocietyAppBackend.Service
          Task<string> BlockUser(int userid);
         Task<string> UnBlockUser(int userid);
         Task UpdateUserData(int userid, UpdateUserDto user, IFormFile image);
-        Task<string> DeleteRegisteredUser(int id);
-
-
-
-
-
-
     }
-
 }

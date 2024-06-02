@@ -19,46 +19,80 @@ namespace SocietyAppBackend.Service.FollowService
         }
         public async Task<string>FollowUser(int userid,int followingid)
         {
-            var k = await _dbcontext.Follows.FirstOrDefaultAsync(i => i.FollowerId == userid && i.FollowingId == followingid);
-            if (userid == followingid||k!=null)
+            try
             {
-                return "cannot follow yourself";
+                var k = await _dbcontext.Follows.FirstOrDefaultAsync(i => i.FollowerId == userid && i.FollowingId == followingid);
+                if (userid == followingid || k != null)
+                {
+                    return "cannot follow yourself";
+                }
+
+                var follow = new Follow { FollowerId = userid, FollowingId = followingid, CreatedAt = DateTime.Now };
+                await _dbcontext.Follows.AddAsync(follow);
+                await _dbcontext.SaveChangesAsync();
+                return "followed successfully";
             }
-
-            var follow = new Follow { FollowerId = userid, FollowingId = followingid, CreatedAt = DateTime.Now };
-            await _dbcontext.Follows.AddAsync(follow);
-           await _dbcontext.SaveChangesAsync();
-            return "followed successfully";
-
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public async Task<List<FollowDto>>GetFollowingInUser(int userid)
         {
-            var followers = await _dbcontext.Follows.Where(i => i.FollowerId == userid).ToListAsync();
-            return _mapper.Map<List<FollowDto>>(followers);
-
+            try
+            {
+                var followers = await _dbcontext.Follows.Where(i => i.FollowerId == userid).ToListAsync();
+                var followdto = _mapper.Map<List<FollowDto>>(followers);
+                return followdto;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public async Task<List<FollowDto>> GetAllFollowersInAUser(int userid)
         {
-            var followers = await _dbcontext.Follows.Where(i => i.FollowingId == userid).ToListAsync();
-            return _mapper.Map<List<FollowDto>>(followers);
+            try
+            {
+                var followers = await _dbcontext.Follows.Where(i => i.FollowingId == userid).ToListAsync();
+                return _mapper.Map<List<FollowDto>>(followers);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<List<FollowDto>> GetAllfollowList()
         {
-           return  _mapper.Map<List<FollowDto>>(_dbcontext.Follows.ToList());
+            try
+            {
+                return _mapper.Map<List<FollowDto>>(_dbcontext.Follows.ToList());
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
         public async Task<string> UnFollowUser(int userid, int unfollowingid)
         {
-            var isAvailable = await _dbcontext.Follows.FirstOrDefaultAsync(i => i.FollowerId == userid && i.FollowingId == unfollowingid);
-            if (isAvailable == null)
+            try
             {
-                return "invalid operation";
+                var isAvailable = await _dbcontext.Follows.FirstOrDefaultAsync(i => i.FollowerId == userid && i.FollowingId == unfollowingid);
+                if (isAvailable == null)
+                {
+                    return "invalid operation";
+                }
+                else
+                {
+                    _dbcontext.Follows.Remove(isAvailable);
+                    await _dbcontext.SaveChangesAsync();
+                    return "unfollow successfully";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                _dbcontext.Follows.Remove(isAvailable);
-                await _dbcontext.SaveChangesAsync();
-                return "unfollow successfully";
+                throw new Exception(ex.Message);
             }
         }
 

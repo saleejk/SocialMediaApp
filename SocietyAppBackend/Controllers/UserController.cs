@@ -35,19 +35,33 @@ namespace SocietyAppBackend.Controllers
                 return StatusCode(500, $"an error occured,{ex.Message}");
             }
         }
+
         [HttpGet("GetAllUser")]
         [Authorize]
-
         public async  Task<IActionResult> GetAllUsers()
         {
-            return Ok( await _userService.GetAllUsers());
+            try
+            {
+                return Ok(await _userService.GetAllUsers());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
+
         [HttpGet("GetUserById")]
         [Authorize]
-
         public async Task<IActionResult> GetUserById(int id)
         {
-            return Ok(await _userService.GetUserById(id));
+            try
+            {
+                return Ok(await _userService.GetUserById(id));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost("login")]
@@ -77,36 +91,56 @@ namespace SocietyAppBackend.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
         [HttpPut("block-user")]
         [Authorize(Roles = "Admin")]
-
         public async Task<IActionResult>BlockUser(int id)
         {
-            if (id == null)
+            try
             {
-                return BadRequest("invalid id");
+                if (id == null)
+                {
+                    return BadRequest("invalid id");
+                }
+                return Ok(await _userService.BlockUser(id));
             }
-            return Ok(await _userService.BlockUser(id));
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
 
         }
         [HttpPut("Unblock-user")]
         [Authorize(Roles ="Admin")]
         public async Task<IActionResult>UnBlockUser(int id)
         {
-            return Ok( await _userService.UnBlockUser(id));
+            try
+            {
+                return Ok(await _userService.UnBlockUser(id));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
+
         [HttpPut("updateUserData")]
         [Authorize]
-
         public async Task<IActionResult>UpdateUserData(int userid,[FromForm]UpdateUserDto userdto,IFormFile image)
         {
-            if (userid==null)
+            try
             {
-                BadRequest("invalid id or datas");     
+                if (userid == null)
+                {
+                    BadRequest("invalid id or datas");
+                }
+                await _userService.UpdateUserData(userid, userdto, image);
+                return Ok("user Update successfully");
             }
-            await _userService.UpdateUserData(userid, userdto, image);
-            return Ok("user Update successfully");
-
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
         private string GenerateToken(User users)
         {
@@ -131,19 +165,8 @@ namespace SocietyAppBackend.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
 
         }
-        [HttpDelete("deleteRegUser")]
-       // [Authorize(Roles ="Admin")]
-        public async Task<IActionResult> deleteRegUser(int id)
-        {
-            if (id == null)
-            {
-                return BadRequest("invalid userid");
-
-                
-            }
-
-            return Ok(await _userService.DeleteRegisteredUser(id));
-        }
+    
+        
 
     }
 }
